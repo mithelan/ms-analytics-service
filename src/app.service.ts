@@ -6,7 +6,7 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AnalyticsService {
-   private readonly client;
+  private readonly client;
   constructor(private readonly configService: ConfigService) {
     this.client = createClient({
       url: this.configService.get<string>('CLICK_HOUSE_URL'),
@@ -15,19 +15,18 @@ export class AnalyticsService {
     });
   }
 
- async recordEvent(dto: CreateAnalyticsDto): Promise<void> {
-  try {
-    await this.client.insert({
-      table: 'web_analytics_events',
-      values: [dto],
-      format: 'JSONEachRow',
-    });
-  } catch (error) {
-    console.error('Failed to record analytics event:', {
-      error: error.message || error,
-      data: dto,
-    });
+  async recordEvent(dto: CreateAnalyticsDto): Promise<void> {
+    try {
+      await this.client.insert({
+        table: 'web_analytics_events',
+        values: [dto],
+        format: 'JSONEachRow',
+      });
+    } catch (error) {
+      console.error('Failed to record analytics event:', {
+        error: error.message || error,
+        data: dto,
+      });
+    }
   }
-}
-
 }

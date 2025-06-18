@@ -1,11 +1,5 @@
 // src/analytics/dto/create-analytics.dto.ts
-import {
-  IsString,
-  IsOptional,
-  IsNumber,
-  IsUUID,
-  IsIP,
-} from 'class-validator';
+import { IsString, IsOptional, IsNumber, IsUUID, IsIP } from 'class-validator';
 
 export class CreateAnalyticsDto {
   @IsUUID()
