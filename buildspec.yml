@@ -4,7 +4,7 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - REPOSITORY_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/analytics-service
+      - REPOSITORY_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/ms-analytics-service
       - IMAGE_TAG=latest
       - echo "REPOSITORY_URI=$REPOSITORY_URI"
       - echo "Logging into $REPOSITORY_URI"
@@ -20,7 +20,7 @@ phases:
       - echo Pushing Docker image...
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing image definitions...
-      - printf '[{"name":"analytics-service","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+      - printf '[{"name":"ms-analytics-service","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
 
 artifacts:
   files:
