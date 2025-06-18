@@ -4,19 +4,22 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - REPOSITORY_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/ms-analytics-service
-      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - echo $REPOSITORY_URI
+      - REPOSITORY_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/analytics-service
+      - IMAGE_TAG=latest
+      - echo "REPOSITORY_URI=$REPOSITORY_URI"
+      - echo "Logging into $REPOSITORY_URI"
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $REPOSITORY_URI
+
   build:
     commands:
       - echo Building Docker image...
       - docker build -t $REPOSITORY_URI:$IMAGE_TAG .
+
   post_build:
     commands:
       - echo Pushing Docker image...
       - docker push $REPOSITORY_URI:$IMAGE_TAG
-      - echo Writing image definition file...
+      - echo Writing image definitions...
       - printf '[{"name":"analytics-service","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
 
 artifacts:
