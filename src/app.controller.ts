@@ -3,21 +3,17 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CreateAnalyticsDto } from './dto/create.analytics.dto';
 import { AnalyticsService } from './app.service';
 
-@Controller('analytics')
+@Controller('/')
 export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
 
 
- @Get()
-async health() {
-  return {
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-  };
-}
+  @Get('/')
+  async health() {
+   return { status: 'ok' , env : process.env.NODE_ENV };
+  }
 
-
-  @Post()
+  @Post('post-analysis')
   async postAnalytics(@Body() dto: CreateAnalyticsDto) {
     await this.analyticsService.recordEvent(dto);
     return { message: 'Event recorded successfully' };
