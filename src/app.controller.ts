@@ -8,7 +8,7 @@ export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
 
 
-  @Get('/')
+  @Get('/health')
   async health() {
    return { status: 'ok' , env : process.env.NODE_ENV };
   }
