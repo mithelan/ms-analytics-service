@@ -26,8 +26,10 @@ phases:
 
   build:
     commands:
-      - echo "Building Docker image for linux/arm64..."
-      - docker buildx build --platform linux/arm64 -t $REPOSITORY_URI:$IMAGE_TAG . --push
+      - echo "Building Docker image for linux/amd64..."
+      - docker buildx create --use || true
+      - docker buildx inspect --bootstrap
+      - docker buildx build --platform linux/amd64 -t $REPOSITORY_URI:$IMAGE_TAG . --push
 
   post_build:
     commands:
