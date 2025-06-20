@@ -27,12 +27,16 @@ phases:
   build:
     commands:
       - echo "Building Docker image for linux/amd64..."
-      - docker buildx create --use || true
-      - docker buildx inspect --bootstrap
-      - docker buildx build --platform linux/amd64 -t $REPOSITORY_URI:$IMAGE_TAG . --push
+      - docker build -t $REPOSITORY_URI:$IMAGE_TAG .
 
   post_build:
     commands:
+      - echo Pushing Docker image...
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - echo Writing image definitions...
+      - printf '[{"name":"ms-analytics-service","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+
+      
       - echo "Setting up kubeconfig with aws-iam-authenticator..."
       - aws eks update-kubeconfig --region ap-southeast-1 --name ms-analytics-cluster
   
