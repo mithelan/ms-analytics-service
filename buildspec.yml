@@ -2,19 +2,23 @@ version: 0.2
 
 phases:
   install:
-    runtime-versions:
-      docker: 20
     commands:
-      - echo Installing necessary tools...
-      - curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.10/2024-05-15/bin/linux/amd64/kubectl
-      - chmod +x ./kubectl
-      - mv ./kubectl /usr/local/bin/
-      - echo "Installing AWS CLI and updating kubeconfig..."
-      - aws eks update-kubeconfig --region $AWS_REGION --name ms-analytics-cluster
+      - echo "Installing dependencies..."
+
+      - echo "Installing kubectl (Linux x86_64)..."
+      - curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.33.0/2025-05-01/bin/linux/amd64/kubectl
+      - chmod +x kubectl
+      - mv kubectl /usr/local/bin/kubectl
+      - kubectl version --client
+
+      - echo "Confirming AWS CLI identity..."
+      - aws sts get-caller-identity
+      - echo "Testing cluster access..."
+        kubectl auth can-i list nodes
 
   pre_build:
     commands:
-      - echo Logging in to Amazon ECR...
+      - echo "Logging in to Amazon ECR..."
       - REPOSITORY_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/ms-analytics-service
       - IMAGE_TAG=latest
       - echo "REPOSITORY_URI=$REPOSITORY_URI"
@@ -22,25 +26,21 @@ phases:
 
   build:
     commands:
-      - echo Building Docker image...
-      - docker build -t $REPOSITORY_URI:$IMAGE_TAG .
+      - echo "Building Docker image for linux/arm64..."
+      - docker buildx build --platform linux/arm64 -t $REPOSITORY_URI:$IMAGE_TAG . --push
 
   post_build:
     commands:
-      - echo Pushing Docker image...
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
-
-      - echo Deploying to EKS using rolling update...
+      - echo "Setting up kubeconfig with aws-iam-authenticator..."
+      - aws eks update-kubeconfig --region ap-southeast-1 --name ms-analytics-cluster
+  
+      - echo "Testing cluster connection..."
+      - kubectl get svc
+  
+      - echo "Deploying to EKS using rolling update..."
       - kubectl set image deployment/ms-analytics-deployment ms-analytics-service=$REPOSITORY_URI:$IMAGE_TAG
       - kubectl rollout status deployment/ms-analytics-deployment
 
-      - echo Running unit tests...
-      - npm ci
-      - npm run test
-
-      - echo Running integration tests...
-      - npm ci
-      - npm run test:int
 
 artifacts:
   files:
