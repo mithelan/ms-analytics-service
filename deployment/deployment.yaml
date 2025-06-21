@@ -22,7 +22,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: ms-analytics-service
-          image: 679664559262.dkr.ecr.ap-southeast-1.amazonaws.com/ms-analytics-service
+          image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/ms-analytics-service:${IMAGE_TAG}
           ports:
             - containerPort: 3001
           env:
