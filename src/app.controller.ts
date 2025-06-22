@@ -7,13 +7,12 @@ import { AnalyticsService } from './app.service';
 export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
 
-
   @Get('/health')
-  async health() {
-   return { status: 'ok' , env : process.env.NODE_ENV };
+  health() {
+    return { status: 'ok', env: process.env.NODE_ENV };
   }
 
-  @Post('post-analysis')
+  @Post('analytics')
   async postAnalytics(@Body() dto: CreateAnalyticsDto) {
     await this.analyticsService.recordEvent(dto);
     return { message: 'Event recorded successfully' };

@@ -57,7 +57,7 @@ describe('AnalyticsController', () => {
       };
 
       const result = await controller.postAnalytics(dto);
-
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(service.recordEvent).toHaveBeenCalledWith(dto);
       expect(result).toEqual({ message: 'Event recorded successfully' });
     });

@@ -1,5 +1,5 @@
 // src/analytics/analytics.service.ts
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { createClient } from '@clickhouse/client';
 import { CreateAnalyticsDto } from './dto/create.analytics.dto';
 import { ConfigService } from '@nestjs/config';
@@ -17,6 +17,9 @@ export class AnalyticsService {
 
   async recordEvent(dto: CreateAnalyticsDto): Promise<void> {
     try {
+      /* eslint-disable @typescript-eslint/no-unsafe-call */
+      /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+      /* eslint-disable @typescript-eslint/no-unsafe-assignment */
       await this.client.insert({
         table: 'web_analytics_events',
         values: [dto],
@@ -27,6 +30,7 @@ export class AnalyticsService {
         error: error.message || error,
         data: dto,
       });
+     throw new InternalServerErrorException('Failed to record analytics event');
     }
   }
 }

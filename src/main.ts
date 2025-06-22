@@ -9,6 +9,7 @@ async function bootstrap() {
     await app.listen(PORT, '0.0.0.0');
     console.log(`✅ App is running on http://localhost:${PORT}`);
   } catch (err) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     console.error(`❌ Failed to bind to port ${PORT}:`, err.message);
   }
 }
