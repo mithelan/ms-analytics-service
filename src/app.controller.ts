@@ -9,7 +9,7 @@ export class AnalyticsController {
 
   @Get('/health')
   health() {
-    return { status: 'ok', env: process.env.NODE_ENV };
+    return { status: 'ok', env: process.env.NODE_ENV, clickHouse: process.env.CLICK_HOUSE_USERNAME };
   }
 
   @Post('analytics')
