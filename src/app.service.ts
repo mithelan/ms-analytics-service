@@ -17,6 +17,11 @@ export class AnalyticsService {
 
   async recordEvent(dto: CreateAnalyticsDto): Promise<void> {
     try {
+      console.log("this.configService.get<string>('CLICK_HOUSE_URL'): ", this.configService.get<string>('CLICK_HOUSE_URL')
+      ,this.configService.get<string>('CLICK_HOUSE_USERNAME'),
+      this.configService.get<string>('CLICK_HOUSE_PASSWORD')
+    );
+
       /* eslint-disable @typescript-eslint/no-unsafe-call */
       /* eslint-disable @typescript-eslint/no-unsafe-member-access */
       /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -26,6 +31,7 @@ export class AnalyticsService {
         format: 'JSONEachRow',
       });
     } catch (error) {
+      console.log("error: ", error);
       console.error('Failed to record analytics event:', {
         error: error.message || error,
         data: dto,

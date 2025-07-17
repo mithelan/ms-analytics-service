@@ -13,7 +13,7 @@ image:
   pullPolicy: IfNotPresent
 
 env:
-  CLICK_HOUSE_URL: https://hpft7t1ax8.ap-southeast-1.aws.clickhouse.cloud:8443
+  CLICK_HOUSE_URL: https://op6jbct4rg.ap-southeast-1.aws.clickhouse.cloud:8443
   NODE_ENV: production
   PORT: "3004"
 
@@ -29,7 +29,6 @@ ingress:
   host: 13.250.183.84.sslip.io
   paths:
     - path: /analytics
-      pathType: Prefix
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 

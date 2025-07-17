@@ -16,8 +16,8 @@ spec:
       http:
         paths:
           {{- range .Values.ingress.paths }}
-          - path: {{ .path }}
-            pathType: Prefix
+          - path: /analytics(/|$)(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: {{ $.Values.app.name }}
