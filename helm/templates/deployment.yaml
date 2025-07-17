@@ -3,8 +3,7 @@ kind: Deployment
 metadata:
   name: {{ printf "%s-%s" .Values.app.name .Values.color | trim }}
   labels:
-    app: {{ .Values.app.name }}
-    color: {{ .Values.color }}
+    app: {{ printf "%s-%s" .Values.app.name .Values.color | trim }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
