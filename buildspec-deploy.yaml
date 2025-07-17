@@ -1,0 +1,50 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "Installing dependencies..."
+
+      - echo "Installing kubectl (Linux x86_64)..."
+      - curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.33.0/2025-05-01/bin/linux/amd64/kubectl
+      - chmod +x kubectl
+      - mv kubectl /usr/local/bin/kubectl
+      - kubectl version --client
+
+      - echo "Confirming AWS CLI identity..."
+      - aws sts get-caller-identity
+      - echo "Testing cluster access..."
+      - kubectl auth can-i list nodes
+
+post_build:
+  commands:
+    - echo "Setting up kubeconfig..."
+    - aws eks update-kubeconfig --region ap-southeast-1 --name ms-lugx-cluster
+
+    - echo "Checking current active color..."
+    - CURRENT_COLOR=$(kubectl get configmap deployment-color -o jsonpath="{.data.color}" || echo "blue")
+
+    - if [ "$CURRENT_COLOR" = "blue" ]; then
+        NEXT_COLOR="green";
+        VALUES_FILE="helm/values-green.yaml";
+      else
+        NEXT_COLOR="blue";
+        VALUES_FILE="helm/values-blue.yaml";
+      fi
+
+    - echo "Deploying ${NEXT_COLOR} version..."
+    - helm upgrade --install analytics-${NEXT_COLOR} ./helm -f $VALUES_FILE --namespace default
+
+    - echo "Waiting for ${NEXT_COLOR} deployment to stabilize..."
+    - kubectl rollout status deployment analytics-${NEXT_COLOR}
+
+    - echo "Switching Ingress to ${NEXT_COLOR}..."
+    - kubectl patch ingress analytics-ingress -p "{\"spec\":{\"rules\":[{\"host\":\"13.250.183.84.sslip.io\",\"http\":{\"paths\":[{\"path\":\"/analytics\",\"backend\":{\"service\":{\"name\":\"analytics-${NEXT_COLOR}-svc\",\"port\":{\"number\":80}}}}]}}]}"
+
+    - echo "Updating active color to ${NEXT_COLOR}..."
+    - kubectl create configmap deployment-color --from-literal=color=$NEXT_COLOR --dry-run=client -o yaml | kubectl apply -f -
+
+
+artifacts:
+  files:
+    - imagedefinitions.json

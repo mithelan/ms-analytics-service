@@ -1,9 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.app.name }}
+  name: {{ .Values.app.name }} - {{ .Values.color }}
   labels:
     app: {{ .Values.app.name }}
+    color: {{ .Values.color }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -13,6 +14,7 @@ spec:
     metadata:
       labels:
         app: {{ .Values.app.name }}
+        color: {{ .Values.color }}
     spec:
       containers:
         - name: {{ .Values.container.name }}
