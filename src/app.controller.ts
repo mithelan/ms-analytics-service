@@ -7,9 +7,9 @@ import { AnalyticsService } from './app.service';
 export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
 
-  @Get('/analytics/health')
+  @Get('/health')
   health() {
-    return { status: 'ok', env: process.env.NODE_ENV, clickHouse: process.env.CLICK_HOUSE_USERNAME };
+    return { status: 'ok', env: process.env.NODE_ENV, clickHouse: process.env.CLICK_HOUSE_USERNAME, service: 'Analytics' };
   }
 
   @Post('analytics/create')
