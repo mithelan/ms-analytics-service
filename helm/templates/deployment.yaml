@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.app.name }} - {{ .Values.color }}
+  name: {{ printf "%s-%s" .Values.app.name .Values.color | trim }}
   labels:
     app: {{ .Values.app.name }}
     color: {{ .Values.color }}
