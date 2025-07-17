@@ -1,0 +1,42 @@
+app:
+  name: analytics-service-app
+
+replicaCount: 1
+
+container:
+  name: analytics-service-container
+  port: 3004
+
+image:
+  repository: 241856856673.dkr.ecr.ap-southeast-1.amazonaws.com/ms-analytics-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+env:
+  - name: DATABASE
+    value: analytics_iit_db
+  - name: DB_PORT
+    value: "3306"
+  - name: HOST
+    value: mysql-db
+  - name: PASSWORD
+    value: root1234
+  - name: PORT
+    value: "3004"
+  - name: USERNAME
+    value: root
+  - name: NODE_ENV
+    value: 'production'  
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3004
+
+ingress:
+  enabled: true
+  className: nginx
+  host: 13.250.183.84.sslip.io
+  path: /analytics
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
