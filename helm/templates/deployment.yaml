@@ -22,6 +22,16 @@ spec:
           env:
             - name: CLICK_HOUSE_URL
               value: {{ .Values.env.CLICK_HOUSE_URL }}
+            - name: CLICK_HOUSE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: clickhouse-secret
+                  key: CLICK_HOUSE_USERNAME
+            - name: CLICK_HOUSE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: clickhouse-secret
+                  key: CLICK_HOUSE_PASSWORD
             - name: PORT
               value: "{{ .Values.env.PORT }}"
           readinessProbe:
