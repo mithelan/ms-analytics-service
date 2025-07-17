@@ -3,11 +3,13 @@ kind: Service
 metadata:
   name: {{ printf "%s-%s" .Values.app.name .Values.color | trim }}
   labels:
-    app: {{ printf "%s-%s" .Values.app.name .Values.color | trim }}
+    app: {{ .Values.app.name }}
+    color: {{ .Values.color }}
 spec:
   type: {{ .Values.service.type }}
   selector:
-    app: {{ printf "%s-%s" .Values.app.name .Values.color | trim }}
+    app: {{ .Values.app.name }}
+    color: {{ .Values.color }}
   ports:
     - name: http
       port: {{ .Values.service.port }}

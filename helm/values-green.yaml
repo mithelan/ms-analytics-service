@@ -1,5 +1,6 @@
 app:
   name: analytics-service-app
+color: green
 
 replicaCount: 1
 
@@ -23,14 +24,12 @@ service:
   port: 80
   targetPort: 3004
 
-# ingress:
-#   enabled: true
-#   className: nginx
-#   host: 13.250.183.84.sslip.io
-#   paths:
-#     - path: /analytics
-#   annotations:
-#     nginx.ingress.kubernetes.io/rewrite-target: /$2
+ingress:
+  enabled: true
+  className: nginx
+  host: 13.250.183.84.sslip.io
+  paths:
+    - path: /analytics
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 
-
-color: 'green'

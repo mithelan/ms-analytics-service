@@ -4,11 +4,13 @@ metadata:
   name: {{ printf "%s-%s" .Values.app.name .Values.color | trim }}
   labels:
     app: {{ printf "%s-%s" .Values.app.name .Values.color | trim }}
+    color: {{ .Values.color }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: {{ .Values.app.name }}
+      color: {{ .Values.color }}
   template:
     metadata:
       labels:
