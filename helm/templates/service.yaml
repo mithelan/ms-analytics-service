@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.app.name }}
+  name: {{ printf "%s-%s" .Values.app.name .Values.app.color | trim }}
   labels:
-    app: {{ .Values.app.name }}
+    app: {{ printf "%s-%s" .Values.app.name .Values.app.color | trim }}
 spec:
   type: {{ .Values.service.type }}
   selector:
-    app: {{ .Values.app.name }}
+    app: {{ printf "%s-%s" .Values.app.name .Values.app.color | trim }}
   ports:
     - name: http
       port: {{ .Values.service.port }}
