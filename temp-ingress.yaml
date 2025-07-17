@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    meta.helm.sh/release-name: analytics-green
+    meta.helm.sh/release-namespace: default
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  creationTimestamp: "2025-07-17T10:55:49Z"
+  generation: 5
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: analytics-service-app-ingress
+  namespace: default
+  resourceVersion: "163366"
+  uid: e5965e96-cde3-41cc-a4d3-1245bb942ba8
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: 13.250.183.84.sslip.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: analytics-service-app-blue
+            port:
+              number: 80
+        path: /analytics(/|$)(.*)
+        pathType: ImplementationSpecific
+status:
+  loadBalancer:
+    ingress:
+    - hostname: a83b25a6564544d9698cee9d68163919-427988952.ap-southeast-1.elb.amazonaws.com

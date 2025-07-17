@@ -17,9 +17,11 @@ env:
   CLICK_HOUSE_URL: https://op6jbct4rg.ap-southeast-1.aws.clickhouse.cloud:8443
   NODE_ENV: production
   PORT: "3004"
+  APP_VERSION: green
 
 
 service:
+  name: analytics-green-svc
   type: ClusterIP
   port: 80
   targetPort: 3004
