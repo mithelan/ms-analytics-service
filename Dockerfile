@@ -17,4 +17,4 @@ COPY --from=builder /app/dist ./dist
 
 CMD ["node", "dist/src/main"]
 
-EXPOSE 3001
+EXPOSE 3004

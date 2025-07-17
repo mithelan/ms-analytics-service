@@ -3,18 +3,18 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo "Installing dependencies..."
+      # - echo "Installing dependencies..."
 
-      - echo "Installing kubectl (Linux x86_64)..."
-      - curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.33.0/2025-05-01/bin/linux/amd64/kubectl
-      - chmod +x kubectl
-      - mv kubectl /usr/local/bin/kubectl
-      - kubectl version --client
+      # - echo "Installing kubectl (Linux x86_64)..."
+      # - curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.33.0/2025-05-01/bin/linux/amd64/kubectl
+      # - chmod +x kubectl
+      # - mv kubectl /usr/local/bin/kubectl
+      # - kubectl version --client
 
-      - echo "Confirming AWS CLI identity..."
-      - aws sts get-caller-identity
-      - echo "Testing cluster access..."
-        kubectl auth can-i list nodes
+      # - echo "Confirming AWS CLI identity..."
+      # - aws sts get-caller-identity
+      # - echo "Testing cluster access..."
+      # - kubectl auth can-i list nodes
 
   pre_build:
     commands:
@@ -26,6 +26,13 @@ phases:
 
   build:
     commands:
+      - echo "Running unit tests..."
+      - npm install
+      - npm run test
+
+      # - echo "Running integration tests..."
+      # - npm run test:int
+
       - echo "Building Docker image for linux/amd64..."
       - docker build -t $REPOSITORY_URI:$IMAGE_TAG .
 
@@ -36,17 +43,15 @@ phases:
       - echo Writing image definitions...
       - printf '[{"name":"ms-analytics-service","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
 
-      
-      - echo "Setting up kubeconfig with aws-iam-authenticator..."
-      - aws eks update-kubeconfig --region ap-southeast-1 --name ms-analytics-cluster
-  
-      - echo "Testing cluster connection..."
-      - kubectl get svc
-  
-      - echo "Deploying to EKS using rolling update..."
-      - kubectl set image deployment/ms-analytics-deployment ms-analytics-service=$REPOSITORY_URI:$IMAGE_TAG
-      - kubectl rollout status deployment/ms-analytics-deployment
+      # - echo "Setting up kubeconfig with aws-iam-authenticator..."
+      # - aws eks update-kubeconfig --region ap-southeast-1 --name ms-lugx-cluster
 
+      # - echo "Testing cluster connection..."
+      # - kubectl get svc
+
+      # - echo "Deploying to EKS using rolling update..."
+      # - kubectl set image deployment/ms-analytics-deployment ms-analytics-service=$REPOSITORY_URI:$IMAGE_TAG
+      # - kubectl rollout status deployment/ms-analytics-deployment
 
 artifacts:
   files:
