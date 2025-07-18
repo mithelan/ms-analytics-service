@@ -25,6 +25,8 @@ spec:
           env:
             - name: CLICK_HOUSE_URL
               value: {{ .Values.env.CLICK_HOUSE_URL }}
+            - name: DUMMY
+              value: {{ .Values.env.DUMMY }}  
             - name: APP_VERSION
               value: {{ .Values.env.APP_VERSION }}   
             - name: CLICK_HOUSE_USERNAME

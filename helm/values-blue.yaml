@@ -12,7 +12,7 @@ container:
 image:
   repository: 241856856673.dkr.ecr.ap-southeast-1.amazonaws.com/ms-analytics-service
   tag: latest
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 env:
   CLICK_HOUSE_URL: https://op6jbct4rg.ap-southeast-1.aws.clickhouse.cloud:8443
