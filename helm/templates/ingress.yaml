@@ -1,20 +1,22 @@
+{{- if .Values.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: analytics-service-app-ingress
-  namespace: analytics
+  name: {{ printf "%s-%s" .Values.app.name .Values.color | trim }}
+  namespace: analytics-service
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   ingressClassName: nginx
   rules:
-    - host: 13.250.183.84.sslip.io
+    - host: {{ .Values.ingress.host }}
       http:
         paths:
           - path: /analytics(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:
-                name: analytics-blue-svc   
+                name: {{ .Values.service.name }}
                 port:
-                  number: 80
+                  number: {{ .Values.service.port }}
+{{- end }}

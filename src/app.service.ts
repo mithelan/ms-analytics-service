@@ -39,4 +39,22 @@ export class AnalyticsService {
      throw new InternalServerErrorException('Failed to record analytics event');
     }
   }
+
+ async getAnalyticsEvents(): Promise<any[]> {
+  try {
+    const resultSet = await this.client.query({
+      query: 'SELECT * FROM web_analytics_events ORDER BY timestamp DESC LIMIT 100',
+      format: 'JSONEachRow',
+    });
+
+    const rows = await resultSet.json(); 
+    return rows;
+  } catch (error) {
+    console.error('Failed to fetch analytics events:', {
+      error: error.message || error,
+    });
+    throw new InternalServerErrorException('Failed to fetch analytics events');
+  }
+}
+
 }

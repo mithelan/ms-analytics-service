@@ -30,7 +30,7 @@ service:
 ingress:
   enabled: true
   className: nginx
-  host: 13.250.183.84.sslip.io
+  host: blue.13.214.63.50.sslip.io
   paths:
     - path: /analytics
   annotations:

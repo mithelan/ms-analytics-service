@@ -17,4 +17,11 @@ export class AnalyticsController {
     await this.analyticsService.recordEvent(dto);
     return { message: 'Event recorded successfully' };
   }
+
+  @Get('/events')
+  async getAnalyticsEvents() {
+    return  await this.analyticsService.getAnalyticsEvents();
+  }
+
+
 }
