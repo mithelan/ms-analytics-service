@@ -1,4 +1,4 @@
 stableIngress:
-  enabled: true
+  enabled: false
   host: analytics.13.214.63.50.sslip.io
   activeService: analytics-blue-svc

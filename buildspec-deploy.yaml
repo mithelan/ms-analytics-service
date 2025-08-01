@@ -17,18 +17,16 @@ phases:
       - aws sts get-caller-identity
 
   post_build:
-      commands:
-        - echo "Setting kubeconfig..."
-        - aws eks update-kubeconfig --region $AWS_REGION --name ms-lugx-cluster
+    commands:
+      - echo "Setting kubeconfig..."
+      - aws eks update-kubeconfig --region $AWS_REGION --name ms-lugx-cluster
+      - echo "Deploying to $COLOR environment..."
+      - helm upgrade --install analytics-blue ./helm -n analytics-service --create-namespace -f helm/values-blue.yaml --wait
+      - echo "Switching stable ingress to analytics-$COLOR-svc..."
+      - kubectl patch ingress analytics-stable-ingress -n analytics-service --type='json' -p="[{\"op\":\"replace\",\"path\":\"/spec/rules/0/http/paths/0/backend/service/name\",\"value\":\"analytics-$COLOR-svc\"}]"
 
-        - echo "Deploying to inactive environment (e.g., green)..."
-        - helm upgrade analytics-green ./helm -n analytics-service --install --set image.tag=$IMAGE_TAG --wait
 
-        - echo "Switching ingress to the new deployment (analytics-green-svc)..."
-        - kubectl patch ingress analytics-stable-ingress -n analytics-service --type='json' -p='[{"op":"replace","path":"/spec/rules/0/http/paths/0/backend/service/name","value":"analytics-green-svc"}]'
 
 artifacts:
   files:
     - imagedefinitions.json
-
-

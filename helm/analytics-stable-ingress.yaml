@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: analytics-stable-ingress
+  namespace: analytics-service
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: analytics.13.214.63.50.sslip.io
+    http:
+      paths:
+      - path: /analytics(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: analytics-blue-svc   # or analytics-green-svc depending on active deployment
+            port:
+              number: 80

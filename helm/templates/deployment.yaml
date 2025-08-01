@@ -1,4 +1,3 @@
-{{- if not .Values.stableIngress.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -55,4 +54,3 @@ spec:
               port: {{ .Values.container.port }}
             initialDelaySeconds: 15
             periodSeconds: 20
-{{- end }}

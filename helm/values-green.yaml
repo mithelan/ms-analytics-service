@@ -27,7 +27,7 @@ service:
   targetPort: 3004
 
 ingress:
-  enabled: true
+  enabled: false
   className: nginx
   host: analytics.13.214.63.50.sslip.io
   paths:
