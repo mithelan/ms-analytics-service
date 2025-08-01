@@ -16,52 +16,16 @@ phases:
       - echo "Confirming AWS CLI identity..."
       - aws sts get-caller-identity
 
-  pre_build:
-    commands:
-      - echo "Setting up kubeconfig..."
-      - aws eks update-kubeconfig --region ap-southeast-1 --name ms-lugx-cluster
+  post_build:
+      commands:
+        - echo "Setting kubeconfig..."
+        - aws eks update-kubeconfig --region $AWS_REGION --name ms-lugx-cluster
 
-      - echo "Testing cluster access..."
-      - kubectl auth can-i list nodes
+        - echo "Deploying to inactive environment (e.g., green)..."
+        - helm upgrade analytics-green ./helm -n analytics-service --install --set image.tag=$IMAGE_TAG --wait
 
-  build:
-    commands:
-      - |
-        echo "Checking current active color..."
-        CURRENT_COLOR=$(kubectl get configmap deployment-color -o jsonpath="{.data.color}" 2>/dev/null || echo "")
-        if [ -z "$CURRENT_COLOR" ]; then
-          echo "No existing deployment color found, defaulting to blue."
-          CURRENT_COLOR="blue"
-        fi
-
-        if [ "$CURRENT_COLOR" = "blue" ]; then
-          NEXT_COLOR="green"
-          VALUES_FILE="helm/values-green.yaml"
-        else
-          NEXT_COLOR="blue"
-          VALUES_FILE="helm/values-blue.yaml"
-        fi
-
-        echo "VALUES_FILE=$VALUES_FILE"
-        ls -l ./helm
-        helm version
-        helm dependency update ./helm || true
-
-        echo "Deploying analytics-$NEXT_COLOR..."
-        helm upgrade --install analytics-${NEXT_COLOR} ./helm -f $VALUES_FILE --namespace default --debug > helm-deploy.log 2>&1 || {
-          echo "Helm upgrade failed, printing logs:"
-          cat helm-deploy.log
-          exit 1
-        }
-
-      - echo "Waiting for analytics-$NEXT_COLOR deployment to stabilize..."
-      - kubectl rollout status deployment analytics-${NEXT_COLOR}
-
-      - echo "Switching Ingress to analytics-$NEXT_COLOR..."
-      - kubectl patch ingress analytics-ingress -p "{\"spec\":{\"rules\":[{\"host\":\"13.250.183.84.sslip.io\",\"http\":{\"paths\":[{\"path\":\"/analytics\",\"backend\":{\"service\":{\"name\":\"analytics-${NEXT_COLOR}-svc\",\"port\":{\"number\":80}}}}]}}]}}"
-
-      - echo "Updating active color ConfigMap to $NEXT_COLOR..."
-      - kubectl create configmap deployment-color --from-literal=color=$NEXT_COLOR --dry-run=client -o yaml | kubectl apply -f -
+        - echo "Switching ingress to the new deployment (analytics-green-svc)..."
+        - kubectl patch ingress analytics-stable-ingress -n analytics-service --type='json' -p='[{"op":"replace","path":"/spec/rules/0/http/paths/0/backend/service/name","value":"analytics-green-svc"}]'
 
 artifacts:
   files:

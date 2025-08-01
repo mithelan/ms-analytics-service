@@ -30,9 +30,13 @@ service:
 ingress:
   enabled: true
   className: nginx
-  host: blue.13.214.63.50.sslip.io
+  host: analytics.13.214.63.50.sslip.io
   paths:
     - path: /analytics
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 
+stableIngress:
+  enabled: true
+  host: analytics.13.214.63.50.sslip.io
+  activeService: analytics-blue-svc
