@@ -28,9 +28,9 @@ service:
   targetPort: 3004
 
 ingress:
-  enabled: false
+  enabled: true
   className: nginx
-  host: analytics.13.214.63.50.sslip.io
+  host: a3b59b55792154b8b9ddc81a5603c482-1330709055.ap-southeast-1.elb.amazonaws.com
   paths:
     - path: /analytics
   annotations:
